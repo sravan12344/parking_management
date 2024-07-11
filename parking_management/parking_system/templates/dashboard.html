@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<style>
+    .dashboard-card {
+        margin-bottom: 15px;
+        border-radius: 5px;
+        text-align: left;
+        padding: 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        height: 100px; /* Adjust height as needed */
+    }
+
+    .dashboard-card .card-content {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dashboard-card i {
+        font-size: 40px;
+    }
+
+    .dashboard-card h4 {
+        margin: 0;
+        font-size: 24px; /* Adjust font size as needed */
+    }
+
+    .dashboard-card p {
+        margin: 0;
+        font-size: 16px; /* Adjust font size as needed */
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-card {
+            flex-direction: column;
+            align-items: flex-start;
+            height: auto;
+            padding: 10px;
+        }
+
+        .dashboard-card i {
+            font-size: 30px;
+            align-self: flex-end;
+        }
+
+        .dashboard-card h4 {
+            font-size: 20px;
+        }
+
+        .dashboard-card p {
+            font-size: 14px;
+        }
+    }
+</style>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md-4 mb-4">
+            <div class="dashboard-card" style="background-color: cadetblue;">
+                <div class="card-content">
+                    <h4>{{ parked_vehicles }}</h4>
+                    <p>Vehicles Parked</p>
+                </div>
+                <i class="fas fa-parking"></i>
+            </div>
+        </div>
+        <div class="col-12 col-md-4 mb-4">
+            <div class="dashboard-card" style="background-color: rgba(0, 0, 0, 0.889);">
+                <div class="card-content">
+                    <h4>{{ departed_vehicles }}</h4>
+                    <p>Departed Vehicles</p>
+                </div>
+                <i class="fa fa-car"></i>
+            </div>
+        </div>
+        <div class="col-12 col-md-4 mb-4">
+            <div class="dashboard-card" style="background-color: rgb(220, 20, 47);">
+                <div class="card-content">
+                    <h4>{{ categories }}</h4>
+                    <p>Available Categories</p>
+                </div>
+                <i class="fas fa-box"></i>
+            </div>
+        </div>
+        <div class="col-12 col-md-4 mb-4">
+            <div class="dashboard-card" style="background-color: rgb(255, 174, 0);">
+                <div class="card-content">
+                    <h4>{{ total_earnings }}</h4>
+                    <p>Total Earnings</p>
+                </div>
+                <i class="fas fa-dollar-sign"></i>
+            </div>
+        </div>
+        <div class="col-12 col-md-4 mb-4">
+            <div class="dashboard-card" style="background-color: rgba(0, 0, 0, 0.655);">
+                <div class="card-content">
+                    <h4>{{ total_records }}</h4>
+                    <p>Total Records</p>
+                </div>
+                <i class="fas fa-database"></i>
+            </div>
+        </div>
+        <div class="col-12 col-md-4 mb-4">
+            <div class="dashboard-card text-white bg-primary">
+                <div class="card-content">
+                    <h4>{{ parking_slots }}</h4>
+                    <p>Total Parking Slots</p>
+                </div>
+                <i class="fas fa-check-circle"></i>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

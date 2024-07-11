@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8 mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-list" style="margin-right: 10px;"></i>Add Category
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="p_num" class="form-label">Parking Area Number</label>
+                                    <input type="text" id="p_num" name="p_num" class="form-control" autocomplete="off">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="v_type" class="form-label">Vehicle Type</label>
+                                    <input type="text" id="v_type" name="v_type" class="form-control" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="v_limit" class="form-label">Vehicle Limit</label>
+                                    <input type="text" id="v_limit" name="v_limit" class="form-control" autocomplete="off">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="p_charge" class="form-label">Parking Charge</label>
+                                    <input type="text" id="p_charge" name="p_charge" class="form-control" autocomplete="off">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-info" style="margin-right: 10px;"></i>Details
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% for i in display %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ i.vehicle_type }}
+                                    <span><i class="fa fa-dollar-sign"></i> {{ i.parking_charge }}.00</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 mt-4">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa fa-list" style="margin-right: 10px;"></i>Manage Category
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example" class="table table-bordered table-striped">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">S.NO.</th>
+                                        <th scope="col">Area Number</th>
+                                        <th scope="col">Vehicle Type</th>
+                                        <th scope="col">Vehicle Limit</th>
+                                        <th scope="col">Charge</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for i in display %}
+                                        <tr>
+                                            <td>{{ forloop.counter }}</td>
+                                            <td>{{ i.parking_Area_no }}</td>
+                                            <td>{{ i.vehicle_type }}</td>
+                                            <td>{{ i.vehicle_limit }}</td>
+                                            <td>{{ i.parking_charge }}</td>
+                                            <td class="status">
+                                              {% if i.status %}
+                                              <a href="{% url 'deactivate_cat' i.id %}">
+                                                  <b style="color:red;">
+                                                      <span class="badge bg-danger">Deactivated</span>
+                                                  </b>
+                                              </a>
+                                          {% else %}
+                                              <a href="{% url 'activate_cat' i.id %}">
+                                                  <b>
+                                                      <span class="badge bg-success">Activated</span>
+                                                  </b>
+                                              </a>
+                                          {% endif %}
+                                            </td>
+                                            <td>
+                                                <!-- Edit button -->
+                                                <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#editdata-{{ i.id }}">
+                                                    <i class="fa fa-pencil"></i>
+                                                </button>
+                                                <!-- Delete button -->
+                                                <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#delete-{{ i.id }}">
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Modal -->
+    {% for i in display %}
+        <div class="modal fade" id="editdata-{{ i.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="POST" action="{% url 'update_cat' i.id %}" id="updateForm" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <input type="hidden" name="category_id" id="category_id" value="{{ i.id }}">
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="update_p_num{{ i.id }}" class="form-label">Parking Area Number</label>
+                                    <input type="text" class="form-control" id="update_p_num{{ i.id }}" name="p_num" value="{{ i.parking_Area_no }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="update_v_type{{ i.id }}" class="form-label">Vehicle Type</label>
+                                    <input type="text" class="form-control" id="update_v_type{{ i.id }}" name="v_type" value="{{ i.vehicle_type }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label for="update_v_limit{{ i.id }}" class="form-label">Vehicle Limit</label>
+                                    <input type="text" class="form-control" id="update_v_limit{{ i.id }}" name="v_limit" value="{{ i.vehicle_limit }}">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="update_p_charge{{ i.id }}" class="form-label">Parking Charge</label>
+                                    <input type="text" class="form-control" id="update_p_charge{{ i.id }}" name="p_charge" value="{{ i.parking_charge }}">
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12 text-center">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                    <button type="reset" class="btn btn-secondary">Reset</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <!-- Delete Modal -->
+    {% for x in display %}
+        <div class="modal fade" id="delete-{{ x.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-md">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Delete details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6>Are you sure you want to delete "{{ x.vehicle_type }}"?</h6>
+                        <div class="text-center mt-3">
+                            <a href="{% url 'delete_cat' x.id %}" class="btn btn-danger">Delete</a>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}

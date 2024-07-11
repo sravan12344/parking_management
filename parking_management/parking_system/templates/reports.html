@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<div class="container-fluid">
+    <!-- Charts Section -->
+     <h1>
+        Parking and Revenue Reports
+     </h1>
+    <div class="row mt-5">
+        <div class="col-md-6 col-lg-4">
+            <div class="card bg-white text-white mb-4">
+                <div class="card-body">
+                    <canvas id="parkingPieChart"></canvas>
+                </div>
+                <div class="card-footer text-center" style="color: black;">
+                    Vehicles Status
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card bg-white text-white mb-4">
+                <div class="card-body">
+                    <canvas id="earningsBarChart"></canvas>
+                </div>
+                <div class="card-footer text-center" style="color: black;">
+                    Total Earnings
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <div class="card bg-white text-white mb-4">
+                <div class="card-body">
+                    <canvas id="vehiclesBarChart"></canvas>
+                </div>
+                <div class="card-footer text-center" style="color: black;">
+                    Vehicles Records
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Data for charts
+        var parkedVehicles = {{ parked_vehicles|safe }};
+        var departedVehicles = {{ departed_vehicles|safe }};
+        var totalEarnings = {{ total_earnings|safe }};
+        var parkingSlots = {{ parking_slots|safe }};
+        var categoriesCount = {{ categories|safe }};
+        var totalRecords = {{ total_records|safe }};
+
+        // Theme colors
+        var themeColors = {
+            blue: '#0d6efd',
+            red: '#ff6384',
+            green: '#4bc0c0',
+            yellow: '#ffcd56',
+            orange: '#ff9f40',
+            purple: '#9966ff',
+            gray: '#c9cbcf',
+            black:"#343a40"
+        };
+
+        // Parking Pie Chart
+        new Chart(document.getElementById('parkingPieChart'), {
+            type: 'pie',
+            data: {
+                labels: ['Parked', 'Departed'],
+                datasets: [{
+                    label: 'Vehicles Status',
+                    data: [parkedVehicles, departedVehicles],
+                    backgroundColor: [themeColors.black, themeColors.blue]
+                }]
+            },
+            options: {
+                responsive: true
+            }
+        });
+
+        // Earnings Bar Chart
+        new Chart(document.getElementById('earningsBarChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Total Earnings'],
+                datasets: [{
+                    label: 'Earnings',
+                    data: [totalEarnings],
+                    backgroundColor: [themeColors.green]
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true
+            }
+        });
+
+        // Vehicles Bar Chart
+        new Chart(document.getElementById('vehiclesBarChart'), {
+            type: 'bar',
+            data: {
+                labels: ['Parked Vehicles', 'Departed Vehicles', 'Total Records'],
+                datasets: [{
+                    label: 'Vehicles',
+                    data: [parkedVehicles, departedVehicles, totalRecords],
+                    backgroundColor: [themeColors.blue, themeColors.red, themeColors.orange]
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true
+            }
+        });
+    });
+</script>
+{% endblock %}

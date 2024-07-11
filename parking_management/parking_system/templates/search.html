@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="card-shadow">
+            <div class="row justify-content-center">
+                <div class="card-shadow">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div class="card">
+                                <div class="card" style="border-radius: 0;">
+                                    <div class="card-header">
+                                        <i class="fa fa-list" style="margin-right: 10px;"></i><span>Manage Vehicle</span>
+                                        | Only the records of the last 30 days are available here
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="container mt-5 mb-5">
+                                            <form class="d-flex" role="search" method="GET" action="{% url 'search' %}">
+                                                <input class="form-control" type="search" name="query" placeholder="Search by vehicle number"
+                                                       aria-label="Search" style="border-radius: 0; width: 100%;">
+                                                <button class="btn btn-dark" type="submit" style="border-radius: 0;"><i class="fa fa-search"></i></button>
+                                            </form>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered table-striped" id="vehicle-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col">#</th>
+                                                        <th scope="col">Vehicle Number</th>
+                                                        <th scope="col">Type</th>
+                                                        <th scope="col">Area Number</th>
+                                                        <th scope="col">Charge</th>
+                                                        <th scope="col">Arrival Time</th>
+                                                        <th scope="col">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for vehicle in vehicles %}
+                                                    <tr>
+                                                        <th scope="row">{{ forloop.counter }}</th>
+                                                        <td>{{ vehicle.vehicle_no }}</td>
+                                                        <td>{{ vehicle.categories.vehicle_type }}</td>
+                                                        <td>{{ vehicle.categories.parking_Area_no }}</td>
+                                                        <td>{{ vehicle.categories.parking_charge }}</td>
+                                                        <td>{{ vehicle.arrival_time }}</td>
+                                                        <td>
+                                                            {% if vehicle.status %}
+                                                                <a href="{% url 'search_deact_entry' vehicle.id %}">
+                                                                    <b style="color:red;">
+                                                                        <span class="badge rounded-pill bg-danger">Leaved</span>
+                                                                    </b>
+                                                                </a>
+                                                            {% else %}
+                                                                <a href="{% url 'search_act_entry' vehicle.id %}">
+                                                                    <b>
+                                                                        <span class="badge rounded-pill bg-primary">Parked</span>
+                                                                    </b>
+                                                                </a>
+                                                            {% endif %}
+                                                        </td>
+                                                    </tr>
+                                                    {% empty %}
+                                                    <tr>
+                                                        <td colspan="7" class="text-center">No vehicles found.</td>
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                        <!-- Pagination links -->
+                                        <div class="pagination">
+                                            <span class="page-links">
+                                                {% if page_obj.has_previous %}
+                                                    <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                                                {% endif %}
+                                                <span class="current">
+                                                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                                                </span>
+                                                {% if page_obj.has_next %}
+                                                    <a href="?page={{ page_obj.next_page_number }}">Next</a>
+                                                {% endif %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#vehicle-table').DataTable({
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "All"]],
+            "order": [[0, 'asc']],  // Default sorting by the first column in ascending order
+            "responsive": true,
+            "autoWidth": false,
+            "language": {
+                "paginate": {
+                    "previous": "<i class='fa fa-chevron-left'></i>",
+                    "next": "<i class='fa fa-chevron-right'></i>"
+                },
+                "search": "<i class='fa fa-search'></i>",
+                "searchPlaceholder": "Search...",
+                "info": "_START_ - _END_ of _TOTAL_ entries",
+                "lengthMenu": "Show _MENU_ entries"
+            }
+        });
+    });
+</script>
+
+{% endblock %}
